@@ -1,65 +1,53 @@
+import { Navbar } from "@/components/Navbar";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    return (
+        <main className="relative min-h-screen bg-neutral-950 text-white overflow-hidden font-[family-name:var(--font-geist-sans)]">
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/bg.png"
+                    alt="Bodybuilder background"
+                    fill
+                    className="object-cover object-center opacity-60"
+                    priority
+                />
+                {/* Gradient Overlay for better text readability */}
+                <div className="absolute inset-0 bg-gradient-to-l from-neutral-950/90 via-neutral-950/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent" />
+            </div>
+
+            <Navbar />
+
+            {/* Hero Content */}
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-12 pt-36">
+                <div className="w-full max-w-7xl flex justify-end text-right">
+                    <div className="flex flex-col items-end gap-6 max-w-3xl">
+                        {/* Main Heading */}
+                        <h1 className="text-6xl md:text-8xl lg:text-9xl font-black uppercase italic tracking-tighter leading-[0.8]">
+                            <span className="block text-white">WHERE <span className="text-red-600">HARD</span></span>
+                            <span className="block text-white"><span className="text-red-600">WORK</span> MEETS</span>
+                            <span className="block text-white">SUCCESS</span>
+                        </h1>
+
+                        {/* Description */}
+                        <p className="text-lg md:text-xl text-neutral-300 max-w-xl font-light">
+                            Join the elite community of fitness enthusiasts. Transform your body and mind with our premium programs.
+                        </p>
+
+                        {/* Buttons */}
+                        <div className="flex flex-wrap gap-4 justify-end mt-4">
+                            <button className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all uppercase tracking-wide text-sm md:text-base shadow-lg shadow-red-900/40">
+                                Get Started
+                            </button>
+                            <button className="px-8 py-3 bg-transparent border border-white/20 hover:bg-white/10 text-white font-bold rounded-full transition-all uppercase tracking-wide text-sm md:text-base backdrop-blur-sm">
+                                View Programs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    );
 }
