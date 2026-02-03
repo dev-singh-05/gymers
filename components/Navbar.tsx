@@ -13,6 +13,7 @@ import {
     HelpCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,7 @@ const navItems = [
     { name: "Home", href: "/" },
     { name: "Program", href: "/programs" },
     { name: "Grp", href: "/grp" },
-    { name: "Plans", href: "/plans" },
+    { name: "Team", href: "/plans" },
     { name: "Testimonials", href: "/testimonials" },
 ];
 
@@ -32,7 +33,15 @@ interface Todo {
 }
 
 export const Navbar = () => {
-    const [active, setActive] = useState("Home");
+    const pathname = usePathname();
+
+    // Find the current page based on pathname
+    const getCurrentPage = () => {
+        const currentItem = navItems.find(item => item.href === pathname);
+        return currentItem?.name || "Home";
+    };
+
+    const [hovered, setHovered] = useState<string | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [todoOpen, setTodoOpen] = useState(false);
     const [userOpen, setUserOpen] = useState(false);
@@ -41,6 +50,9 @@ export const Navbar = () => {
     const [input, setInput] = useState("");
 
     const remainingCount = todos.filter(t => !t.completed).length;
+
+    // The active pill should show on hovered item, or fall back to current page
+    const activePill = hovered || getCurrentPage();
 
     const addTodo = () => {
         if (!input.trim()) return;
@@ -73,20 +85,23 @@ export const Navbar = () => {
                     <Logo />
 
                     {/* Desktop Nav */}
-                    <div className="hidden md:flex items-center gap-1 bg-neutral-900/50 p-1 rounded-full border border-white/5 shadow-inner">
+                    <div
+                        className="hidden md:flex items-center gap-1 bg-neutral-900/50 p-1 rounded-full border border-white/5 shadow-inner"
+                        onMouseLeave={() => setHovered(null)}
+                    >
                         {navItems.map(item => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                onMouseEnter={() => setActive(item.name)}
+                                onMouseEnter={() => setHovered(item.name)}
                                 className={cn(
                                     "relative px-4 py-1.5 rounded-full text-sm font-medium",
-                                    active === item.name
+                                    activePill === item.name
                                         ? "text-white"
                                         : "text-neutral-400 hover:text-white"
                                 )}
                             >
-                                {active === item.name && (
+                                {activePill === item.name && (
                                     <motion.div
                                         layoutId="nav-pill"
                                         className="absolute inset-0 bg-red-600 rounded-full shadow-lg shadow-red-900/40"

@@ -1,13 +1,8 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: var(--font-sans);
-}
-
-@layer base {
-  body {
-    @apply bg-neutral-950 text-white;
-  }
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
 }
 
 /* Custom Scrollbar */
@@ -26,4 +21,62 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #525252;
+}
+
+/* READ MORE Button - Diagonal Hover Effect */
+.read-more-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.read-more-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: #000;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+  z-index: -1;
+}
+
+.read-more-btn:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
+.read-more-btn:hover {
+  border-color: #000;
+}
+
+/* Contact Button - Same Diagonal Hover Effect */
+.contact-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.contact-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: #000;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+  z-index: -1;
+}
+
+.contact-btn:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
+.contact-btn:hover {
+  border-color: #000;
 }
