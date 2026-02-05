@@ -1,8 +1,13 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { X, Check, LogIn } from 'lucide-react';
 import { useProgramStore } from '@/lib/programStore';
+import { useState, useEffect } from 'react';
+import { getCurrentUser } from '@/lib/auth';
+import { joinProgram, isUserJoined } from '@/lib/db';
+import Link from 'next/link';
+import type { User } from '@supabase/supabase-js';
 
 interface Program {
     id: string;
@@ -21,18 +26,46 @@ interface ProgramModalProps {
 
 export function ProgramModal({ program, isOpen, onClose }: ProgramModalProps) {
     const { addProgram, isJoined } = useProgramStore();
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [dbJoined, setDbJoined] = useState(false);
+
+    useEffect(() => {
+        getCurrentUser().then(setCurrentUser);
+    }, []);
+
+    // Check if user already joined this program in database
+    useEffect(() => {
+        if (currentUser && program) {
+            isUserJoined(currentUser.id, program.id).then(setDbJoined);
+        }
+    }, [currentUser, program]);
 
     if (!program) return null;
 
-    const joined = isJoined(program.id);
+    const localJoined = isJoined(program.id);
+    const joined = localJoined || dbJoined;
 
-    const handleJoin = () => {
-        if (!joined) {
+    const handleJoin = async () => {
+        if (!currentUser || joined) return;
+
+        setLoading(true);
+        try {
+            // Save to database
+            await joinProgram(currentUser.id, program.id, program.title, program.price);
+
+            // Also save to local store for immediate UI update
             addProgram({
                 id: program.id,
                 name: program.title,
                 price: program.price,
             });
+
+            setDbJoined(true);
+        } catch (error) {
+            console.error('Error joining program:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,29 +126,50 @@ export function ProgramModal({ program, isOpen, onClose }: ProgramModalProps) {
                                 {program.fullDescription}
                             </p>
 
-                            {/* Join Button */}
-                            <button
-                                onClick={handleJoin}
-                                disabled={joined}
-                                className={`
-                                    w-full py-3 px-6 font-bold uppercase tracking-wider text-sm
-                                    transition-all duration-300 cursor-pointer
-                                    flex items-center justify-center gap-2
-                                    ${joined
-                                        ? 'bg-green-600 text-white cursor-default'
-                                        : 'bg-red-600 hover:bg-red-700 text-white hover:scale-[1.02] active:scale-[0.98]'
-                                    }
-                                `}
-                            >
-                                {joined ? (
-                                    <>
-                                        <Check size={18} />
-                                        Already Joined
-                                    </>
-                                ) : (
-                                    'Join Now'
-                                )}
-                            </button>
+                            {/* Action Button */}
+                            {currentUser ? (
+                                <button
+                                    onClick={handleJoin}
+                                    disabled={joined || loading}
+                                    className={`
+                                        w-full py-3 px-6 font-bold uppercase tracking-wider text-sm
+                                        transition-all duration-300 cursor-pointer
+                                        flex items-center justify-center gap-2
+                                        ${joined
+                                            ? 'bg-green-600 text-white cursor-default'
+                                            : 'bg-red-600 hover:bg-red-700 text-white hover:scale-[1.02] active:scale-[0.98]'
+                                        }
+                                        disabled:opacity-70
+                                    `}
+                                >
+                                    {loading ? (
+                                        'Joining...'
+                                    ) : joined ? (
+                                        <>
+                                            <Check size={18} />
+                                            Already Joined
+                                        </>
+                                    ) : (
+                                        'Join Now'
+                                    )}
+                                </button>
+                            ) : (
+                                <div className="space-y-3">
+                                    <div className="bg-neutral-800/50 border border-white/10 rounded-lg p-4 text-center">
+                                        <p className="text-neutral-400 text-sm mb-3">
+                                            Sign in to join this program
+                                        </p>
+                                        <Link
+                                            href="/login"
+                                            onClick={onClose}
+                                            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 rounded-lg font-bold transition-colors"
+                                        >
+                                            <LogIn size={18} />
+                                            Sign In
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 </>

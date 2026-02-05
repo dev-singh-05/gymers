@@ -2,7 +2,9 @@
 
 import { Navbar } from "@/components/Navbar";
 import { HeartBrokenButton } from "@/components/ui/HeartBrokenButton";
+import { AIChatbot } from "@/components/AIChatbot";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -122,7 +124,8 @@ export default function Home() {
                         {/* Buttons */}
                         <div className="flex flex-wrap gap-4 mt-4">
                             <HeartBrokenButton />
-                            <button
+                            <Link
+                                href="/about"
                                 className="
                   px-8 py-3
                   bg-transparent
@@ -141,11 +144,14 @@ export default function Home() {
                 "
                             >
                                 About Us
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
             </section>
+
+            {/* AI Trainer Chatbot */}
+            <AIChatbot />
         </main>
     );
 }
